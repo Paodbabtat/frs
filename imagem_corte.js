@@ -14,8 +14,8 @@ document.getElementById('cortar_imagem').addEventListener('click', function () {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
 
-                const corteLargura = 200; // Ajuste isso para o tamanho do corte desejado
-                const corteAltura = 200;
+                const corteLargura = 15000; // Ajuste isso para o tamanho do corte desejado
+                const corteAltura = 1500;
                 
                 canvas.width = corteLargura;
                 canvas.height = corteAltura;
