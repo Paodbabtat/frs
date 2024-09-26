@@ -3,24 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processador de Imagens Google Drive</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Script da Google API -->
-    <script src="https://apis.google.com/js/api.js"></script>
+    <title>Divisor de Texto e Cortador de Imagens</title>
+    <link rel="stylesheet" href="style.css"> <!-- Certifique-se que o style.css está correto -->
+    <script src="https://apis.google.com/js/api.js"></script> <!-- API do Google -->
 </head>
 <body>
-    <h1>Processador de Imagens Google Drive</h1>
+    <h1>Bem-vindo ao meu site</h1>
+    <p>Aqui você pode usar o divisor de texto e o cortador de imagens.</p>
 
-    <!-- Botão para autenticar no Google -->
-    <button id="authorize_button" style="display: none;">Autorizar Google Drive</button>
-    <button id="signout_button" style="display: none;">Sair</button>
+    <!-- Botões para escolher a funcionalidade -->
+    <button id="btnDivisor">Divisor e Tradutor de Texto</button>
+    <button id="btnCorte">Corte de Imagens Local</button>
+    <button id="btnDrive">Corte de Imagens do Google Drive</button>
 
-    <!-- Listagem dos arquivos e subpastas do Google Drive -->
-    <div id="content"></div> <!-- Exibir subpastas e arquivos -->
-    <div id="imagem_drive_cortada"></div> <!-- Resultado do corte -->
+    <!-- Seção de Divisão e Tradução de Texto -->
+    <section id="divisor-texto" style="display: none;">
+        <h2>Divisor e Tradutor de Texto</h2>
+        <textarea id="texto" rows="5" cols="30" placeholder="Insira seu texto aqui"></textarea><br>
+        <input type="number" id="tamanho_corte" placeholder="Tamanho do corte" /><br>
+        <label for="idioma_origem">Escolha o idioma de origem:</label>
+        <select id="idioma_origem">
+            <option value="auto">Detectar automaticamente</option>
+            <option value="en">Inglês</option>
+            <option value="es">Espanhol</option>
+            <option value="fr">Francês</option>
+            <option value="de">Alemão</option>
+            <option value="pt">Português</option>
+            <option value="it">Italiano</option>
+        </select><br>
+        <label for="idioma_destino">Escolha o idioma de destino:</label>
+        <select id="idioma_destino">
+            <option value="es">Espanhol</option>
+            <option value="fr">Francês</option>
+            <option value="de">Alemão</option>
+            <option value="pt">Português</option>
+            <option value="it">Italiano</option>
+            <option value="en">Inglês</option>
+        </select><br>
+        <label>
+            <input type="checkbox" id="traduzir_check"> Traduzir o texto
+        </label><br>
+        <button id="dividir">Dividir e Traduzir Texto</button>
+        <div id="resultado"></div>
+    </section>
 
+    <!-- Seção de Corte de Imagens Local -->
+    <section id="corte-imagens" style="display: none;">
+        <h2>Corte de Imagens</h2>
+        <input type="file" id="imagem_input" accept="image/*"><br>
+        <button id="cortar_imagem">Cortar Imagem</button>
+        <div id="imagem_cortada"></div>
+    </section>
+
+    <!-- Seção de Corte de Imagens do Google Drive -->
+    <section id="drive-corte" style="display: none;">
+        <h2>Corte de Imagens do Google Drive</h2>
+        <button id="authorize_button" style="display: none;">Autorizar Google Drive</button>
+        <button id="signout_button" style="display: none;">Sair</button>
+        <div id="content"></div> <!-- Exibir subpastas e arquivos -->
+        <div id="imagem_drive_cortada"></div> <!-- Resultado do corte -->
+    </section>
+
+    <!-- Scripts de funcionalidade -->
+    <script src="popup.js"></script> <!-- Script de dividir texto e traduzir -->
+    <script src="imagem_corte.js"></script> <!-- Script de cortar imagens localmente -->
     <script>
-        // Variáveis para o Google API
+        // Lógica para alternar entre as seções
+        document.getElementById('btnDivisor').addEventListener('click', function () {
+            document.getElementById('divisor-texto').style.display = 'block';
+            document.getElementById('corte-imagens').style.display = 'none';
+            document.getElementById('drive-corte').style.display = 'none';
+        });
+
+        document.getElementById('btnCorte').addEventListener('click', function () {
+            document.getElementById('divisor-texto').style.display = 'none';
+            document.getElementById('corte-imagens').style.display = 'block';
+            document.getElementById('drive-corte').style.display = 'none';
+        });
+
+        document.getElementById('btnDrive').addEventListener('click', function () {
+            document.getElementById('divisor-texto').style.display = 'none';
+            document.getElementById('corte-imagens').style.display = 'none';
+            document.getElementById('drive-corte').style.display = 'block';
+        });
+
+        // Parte de autenticação e corte de imagens do Google Drive (do código anterior)
         var CLIENT_ID = '533757513621-n6vdm3e4j6h9r205notvuu1qc68gt85n.apps.googleusercontent.com';
         var API_KEY = 'AIzaSyBHnu3JR3yxeqdk-vMKWo_RhansfxpvF9Q';
         var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
@@ -32,7 +99,6 @@
         var F1_FOLDER_ID = '1yYedANca20yH4sfUy3o_52Jh-gejIhXK'; // ID da pasta F1
         var FD_FOLDER_ID = '1TqOFWuxZwtdUt1yrvdrRoumwwllgVosX'; // ID da pasta FD
 
-        // Função para carregar a API do Google
         function handleClientLoad() {
             gapi.load('client:auth2', initClient);
         }
@@ -51,29 +117,25 @@
             });
         }
 
-        // Função para atualizar o estado de login
         function updateSigninStatus(isSignedIn) {
             if (isSignedIn) {
                 authorizeButton.style.display = 'none';
                 signoutButton.style.display = 'block';
-                listFolders(F1_FOLDER_ID); // Lista subpastas e arquivos de F1
+                listFolders(F1_FOLDER_ID);
             } else {
                 authorizeButton.style.display = 'block';
                 signoutButton.style.display = 'none';
             }
         }
 
-        // Autenticar usuário
         function handleAuthClick() {
             gapi.auth2.getAuthInstance().signIn();
         }
 
-        // Logout do usuário
         function handleSignoutClick() {
             gapi.auth2.getAuthInstance().signOut();
         }
 
-        // Listar subpastas e arquivos da pasta F1
         function listFolders(folderId) {
             gapi.client.drive.files.list({
                 'q': `'${folderId}' in parents and mimeType = 'application/vnd.google-apps.folder'`,
@@ -93,7 +155,6 @@
             });
         }
 
-        // Listar arquivos de imagem em uma subpasta específica
         function listFiles(folderId) {
             gapi.client.drive.files.list({
                 'q': `'${folderId}' in parents and mimeType contains 'image/'`,
@@ -113,7 +174,6 @@
             });
         }
 
-        // Baixar imagem do Google Drive e aplicar corte
         function downloadAndCutFile(fileId) {
             gapi.client.drive.files.get({
                 fileId: fileId,
@@ -124,12 +184,11 @@
                 var img = new Image();
                 img.src = url;
                 img.onload = function () {
-                    cortarImagem(img, fileId); // Função para cortar a imagem
+                    cortarImagem(img, fileId);
                 };
             });
         }
 
-        // Função para cortar imagem e salvar no Google Drive
         function cortarImagem(img, fileId) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -138,23 +197,19 @@
 
             canvas.width = corteLargura;
             canvas.height = corteAltura;
-
-            // Aplicar o corte de 200x200 na imagem
             ctx.drawImage(img, 0, 0, corteLargura, corteAltura, 0, 0, corteLargura, corteAltura);
 
-            // Converter a imagem cortada em um arquivo Blob
             canvas.toBlob(function (blob) {
-                uploadFile(blob, fileId); // Chamar a função para fazer upload da imagem cortada
+                uploadFile(blob, fileId);
             }, 'image/jpeg');
         }
 
-        // Função para fazer o upload da imagem cortada para a pasta FD
         function uploadFile(blob, originalFileId) {
             const fileName = 'imagem_cortada_' + originalFileId + '.jpg';
 
             var metadata = {
-                'name': fileName, // Nome do arquivo
-                'parents': [FD_FOLDER_ID], // Pasta destino (FD)
+                'name': fileName,
+                'parents': [FD_FOLDER_ID],
                 'mimeType': 'image/jpeg'
             };
 
@@ -172,7 +227,6 @@
             });
         }
 
-        // Carrega a API do Google Client ao carregar a página
         handleClientLoad();
     </script>
 </body>
