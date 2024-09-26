@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divisor de Texto e Cortador de Imagens</title>
+    <title>Meu site</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Divisor de Texto e Cortador de Imagens</h1>
+    <h1>Bem-vindo ao meu site</h1>
+    <p>Aqui você pode usar o divisor de texto e o cortador de imagens.</p>
+
+    <!-- Botões para escolher a funcionalidade -->
+    <button id="btnDivisor">Divisor e Tradutor de Texto</button>
+    <button id="btnCorte">Corte de Imagens</button>
 
     <!-- Seção de Divisão e Tradução de Texto -->
-    <section id="divisor-texto">
+    <section id="divisor-texto" style="display: none;">
         <h2>Divisor e Tradutor de Texto</h2>
         <textarea id="texto" rows="5" cols="30" placeholder="Insira seu texto aqui"></textarea><br>
         <input type="number" id="tamanho_corte" placeholder="Tamanho do corte" /><br>
@@ -40,11 +45,9 @@
         <div id="resultado"></div>
     </section>
 
-    <hr>
-
     <!-- Seção de Corte de Imagens -->
-    <section id="corte-imagens">
-        <h2>Cortador de Imagens</h2>
+    <section id="corte-imagens" style="display: none;">
+        <h2>Corte de Imagens</h2>
         <input type="file" id="imagem_input" accept="image/*"><br>
         <button id="cortar_imagem">Cortar Imagem</button>
         <div id="imagem_cortada"></div>
@@ -52,5 +55,17 @@
 
     <script src="popup.js"></script> <!-- Script de dividir texto e traduzir -->
     <script src="imagem_corte.js"></script> <!-- Script de cortar imagens -->
+    <script>
+        // Lógica para exibir apenas uma seção por vez
+        document.getElementById('btnDivisor').addEventListener('click', function () {
+            document.getElementById('divisor-texto').style.display = 'block';
+            document.getElementById('corte-imagens').style.display = 'none';
+        });
+
+        document.getElementById('btnCorte').addEventListener('click', function () {
+            document.getElementById('divisor-texto').style.display = 'none';
+            document.getElementById('corte-imagens').style.display = 'block';
+        });
+    </script>
 </body>
 </html>
