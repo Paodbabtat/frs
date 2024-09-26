@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisor de Texto e Cortador de Imagens</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Divisor de Texto e Cortador de Imagens</h1>
+
+    <!-- Seção de Divisão e Tradução de Texto -->
+    <section id="divisor-texto">
+        <h2>Divisor e Tradutor de Texto</h2>
+        <textarea id="texto" rows="5" cols="30" placeholder="Insira seu texto aqui"></textarea><br>
+        <input type="number" id="tamanho_corte" placeholder="Tamanho do corte" /><br>
+        <label for="idioma_origem">Escolha o idioma de origem:</label>
+        <select id="idioma_origem">
+            <option value="auto">Detectar automaticamente</option>
+            <option value="en">Inglês</option>
+            <option value="es">Espanhol</option>
+            <option value="fr">Francês</option>
+            <option value="de">Alemão</option>
+            <option value="pt">Português</option>
+            <option value="it">Italiano</option>
+        </select><br>
+        <label for="idioma_destino">Escolha o idioma de destino:</label>
+        <select id="idioma_destino">
+            <option value="es">Espanhol</option>
+            <option value="fr">Francês</option>
+            <option value="de">Alemão</option>
+            <option value="pt">Português</option>
+            <option value="it">Italiano</option>
+            <option value="en">Inglês</option>
+        </select><br>
+        <label>
+            <input type="checkbox" id="traduzir_check"> Traduzir o texto
+        </label><br>
+        <button id="dividir">Dividir e Traduzir Texto</button>
+        <div id="resultado"></div>
+    </section>
+
+    <hr>
+
+    <!-- Seção de Corte de Imagens -->
+    <section id="corte-imagens">
+        <h2>Cortador de Imagens</h2>
+        <input type="file" id="imagem_input" accept="image/*"><br>
+        <button id="cortar_imagem">Cortar Imagem</button>
+        <div id="imagem_cortada"></div>
+    </section>
+
+    <script src="popup.js"></script> <!-- Script de dividir texto e traduzir -->
+    <script src="imagem_corte.js"></script> <!-- Script de cortar imagens -->
+</body>
+</html>
